@@ -1,0 +1,71 @@
+@baseUrl = http://127.0.0.1:8000
+
+### 1. Root Endpoint - Kiểm tra API có hoạt động không
+GET {{baseUrl}}/
+Accept: application/json
+
+###
+
+### 2. Dashboard Stats - Lấy thông số môi trường mới nhất (Nhiệt độ, Độ ẩm, Ánh sáng)
+GET {{baseUrl}}/api/sensor-data/latest
+Accept: application/json
+
+###
+
+### 3. Dashboard Chart - Lấy dữ liệu biểu đồ (1 giờ qua)
+GET {{baseUrl}}/api/sensor-data/chart?range=1h
+Accept: application/json
+
+###
+
+### 4. Dashboard Chart - Lấy dữ liệu biểu đồ (5 giờ qua)
+GET {{baseUrl}}/api/sensor-data/chart?range=24h
+Accept: application/json
+
+###
+
+### 6. Search Logs - Tìm kiếm tất cả (Trang 1)
+POST {{baseUrl}}/api/sensor-data/search
+Content-Type: application/json
+
+{
+    "page": 1,
+    "page_size": 10,
+    "sort_type": "desc"
+}
+
+###
+
+### 7. Search Logs - Lọc theo mã cảm biến (Ví dụ: temp1)
+POST {{baseUrl}}/api/sensor-data/search
+Content-Type: application/json
+
+{
+    "sensor_code": "temp",
+    "page": 1,
+    "page_size": 10
+}
+
+###
+
+### 8. Search Logs - Lọc theo thời gian (Ví dụ: 14 giờ)
+POST {{baseUrl}}/api/sensor-data/search
+Content-Type: application/json
+
+{
+    "hour": 14,
+    "page": 1,
+    "page_size": 10
+}
+
+###
+
+### 9. Search Logs - Phân trang (Trang 2)
+POST {{baseUrl}}/api/sensor-data/search
+Content-Type: application/json
+
+{
+    "page": 2,
+    "page_size": 5,
+    "sort_type": "asc"
+}
