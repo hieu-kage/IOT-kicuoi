@@ -50,7 +50,7 @@ const StatCard = ({ label, value, unit, trend, icon: Icon, iconClass, colorClass
     <div>
       <p className="text-[10px] text-gray-400 font-medium mb-1 uppercase tracking-wider">{label}</p>
       <div className="flex items-baseline gap-2">
-        <h2 className={`text-3xl font-bold ${'text-gray-800'}`}>
+        <h2 className={`text-3xl font-bold ${colorClass || 'text-gray-800'}`}>
           {value != null ? `${value}${unit ? (unit === 'Lux' ? ' Lux' : unit) : ''}` : '—'}
         </h2>
         {trend && (
@@ -133,6 +133,27 @@ const DeviceCard = ({ device, onToggle, togglingMap }) => {
       )}
     </div>
   );
+};
+
+const getTempColorClass = (value) => {
+  if (value == null) return { text: "text-[#FB923C]", bg: "bg-orange-50 text-[#FB923C]" }; 
+  if (value < 20) return { text: "text-red-300", bg: "bg-red-50 text-red-300" }; 
+  if (value < 35) return { text: "text-red-500", bg: "bg-red-100 text-red-500" }; 
+  return { text: "text-red-700", bg: "bg-red-200 text-red-700" };
+};
+
+const getHumColorClass = (value) => {
+  if (value == null) return { text: "text-[#3B82F6]", bg: "bg-blue-50 text-[#3B82F6]" }; 
+  if (value < 40) return { text: "text-blue-300", bg: "bg-blue-50 text-blue-300" }; 
+  if (value < 70) return { text: "text-blue-500", bg: "bg-blue-100 text-blue-500" }; 
+  return { text: "text-blue-700", bg: "bg-blue-200 text-blue-700" };
+};
+
+const getLightColorClass = (value) => {
+  if (value == null) return { text: "text-[#FBBF24]", bg: "bg-yellow-50 text-[#FBBF24]" }; 
+  if (value < 200) return { text: "text-yellow-800", bg: "bg-yellow-100 text-yellow-800" }; 
+  if (value < 600) return { text: "text-yellow-500", bg: "bg-yellow-200 text-yellow-500" }; 
+  return { text: "text-yellow-300", bg: "bg-yellow-50 text-yellow-300" }; 
 };
 
 const Dashboard = () => {
@@ -302,9 +323,9 @@ const Dashboard = () => {
     <div className="space-y-6">
       {/* Stat Cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <StatCard label="Temperature" value={stats?.temperature?.value} unit={stats?.temperature?.unit || '°C'} trend="up" icon={FigmaTemp} colorClass="text-[#FB923C]" iconClass="bg-orange-50 text-[#FB923C]" />
-        <StatCard label="Humidity" value={stats?.humidity?.value} unit={stats?.humidity?.unit || '%'} trend="down" icon={FigmaHum} colorClass="text-[#3B82F6]" iconClass="bg-blue-50 text-[#3B82F6]" />
-        <StatCard label="Light Intensity" value={stats?.light?.value} unit={stats?.light?.unit || 'Lux'} trend="up" icon={FigmaLight} colorClass="text-[#FBBF24]" iconClass="bg-yellow-50 text-[#FBBF24]" />
+        <StatCard label="Temperature" value={stats?.temperature?.value} unit={stats?.temperature?.unit || '°C'} trend="up" icon={FigmaTemp} colorClass={getTempColorClass(stats?.temperature?.value).text} iconClass={getTempColorClass(stats?.temperature?.value).bg} />
+        <StatCard label="Humidity" value={stats?.humidity?.value} unit={stats?.humidity?.unit || '%'} trend="down" icon={FigmaHum} colorClass={getHumColorClass(stats?.humidity?.value).text} iconClass={getHumColorClass(stats?.humidity?.value).bg} />
+        <StatCard label="Light Intensity" value={stats?.light?.value} unit={stats?.light?.unit || 'Lux'} trend="up" icon={FigmaLight} colorClass={getLightColorClass(stats?.light?.value).text} iconClass={getLightColorClass(stats?.light?.value).bg} />
       </div>
 
       {/* Chart */}

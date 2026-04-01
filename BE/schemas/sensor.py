@@ -35,6 +35,7 @@ class DashboardChartData(SQLModel):
 
 class SensorLogSearchRequest(SQLModel):
     q: Optional[str] = None
+    type: Optional[str] = None
     sort_type: Optional[str] = "desc"
     page: int = 1
     page_size: int = 10

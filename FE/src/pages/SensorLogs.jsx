@@ -37,6 +37,7 @@ const UNITS = {
 
 const SensorLogs = () => {
   const [q, setQ] = useState('');
+  const [sensorType, setSensorType] = useState('');
   const [sort, setSort] = useState('desc');
 
   const [page, setPage] = useState(1);
@@ -51,6 +52,7 @@ const SensorLogs = () => {
     setLoading(true);
     searchSensorLogs({
       q: q || undefined,
+      type: sensorType || undefined,
       sort_type: sort,
       page: p,
       page_size: pageSize,
@@ -63,7 +65,7 @@ const SensorLogs = () => {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [q, sort, pageSize]);
+  }, [q, sensorType, sort, pageSize]);
 
   // Initial load
   useEffect(() => {
@@ -97,7 +99,7 @@ const SensorLogs = () => {
           <input
             type="text"
             className="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 shadow-sm outline-none border"
-            placeholder="Tìm kiếm theo thời gian (16h30p), tên, hoặc mã cảm biến..."
+            placeholder="Tìm kiếm theo giá trị (28), thời gian (16h30p), tên, hoặc mã..."
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && fetchLogs(1)}
@@ -105,6 +107,17 @@ const SensorLogs = () => {
         </div>
 
         <div className="flex items-center space-x-4 ml-auto">
+
+          <select
+            className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-sm font-medium shadow-sm outline-none focus:ring-purple-500 focus:border-purple-500 min-w-[180px]"
+            value={sensorType}
+            onChange={(e) => { setSensorType(e.target.value); fetchLogs(1); }}
+          >
+            <option value="">Sensor Type: All</option>
+            <option value="temp">Temperature</option>
+            <option value="hum">Humidity</option>
+            <option value="light">Light</option>
+          </select>
 
           <select
             className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-sm font-medium shadow-sm outline-none focus:ring-purple-500 focus:border-purple-500 min-w-[180px]"

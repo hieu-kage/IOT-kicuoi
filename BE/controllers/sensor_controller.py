@@ -103,7 +103,7 @@ def search_sensor_logs(db: Session, request: SensorLogSearchRequest):
 
     if request.q:
         import re
-        from sqlalchemy import or_, extract
+        from sqlalchemy import or_, extract, cast, String
         val = request.q.strip()
 
         time_match = re.search(r'(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?', val)
@@ -133,11 +133,15 @@ def search_sensor_logs(db: Session, request: SensorLogSearchRequest):
             if s_match:
                 filters.append(extract('second', SensorLog.created_at) == int(s_match.group(1)))
         else:
-            # Tìm kiếm theo mã sensor hoặc tên (Sử dụng ILIKE để không phân biệt hoa thường)
+            # Tìm kiếm theo mã sensor, tên, hoặc giá trị
             filters.append(or_(
                 Sensor.sensor_code.ilike(f"%{val}%"),
-                Sensor.name.ilike(f"%{val}%")
+                Sensor.name.ilike(f"%{val}%"),
+                cast(SensorLog.value, String).ilike(f"%{val}%")
             ))
+
+    if request.type:
+        filters.append(Sensor.sensor_code.ilike(f"{request.type}%"))
 
 
     # 3. Áp dụng TẤT CẢ filters vào cả query data và query count
