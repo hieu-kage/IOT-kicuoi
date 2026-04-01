@@ -116,13 +116,11 @@ def on_message(client, userdata, msg):
         if temp is None or hum is None or light is None:
             return
 
-        # 1. Update in-memory cache instantly
         LATEST_SENSOR_DATA["temperature"] = float(temp)
         LATEST_SENSOR_DATA["humidity"] = float(hum)
         LATEST_SENSOR_DATA["light"] = float(light)
         LATEST_SENSOR_DATA["timestamp"] = time.time()
 
-        # Broadcast sensor data to WebSockets
         manager.broadcast_threadsafe({
             "type": "sensor_update",
             "data": {
@@ -132,7 +130,6 @@ def on_message(client, userdata, msg):
             }
         })
 
-        # 2. Throttle DB saving
         current_time = time.time()
         if (current_time - last_db_save_time) >= SAVE_INTERVAL:
             last_db_save_time = current_time

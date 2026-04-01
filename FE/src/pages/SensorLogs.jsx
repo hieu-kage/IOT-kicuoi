@@ -1,24 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { searchSensorLogs } from '../api';
-
+import { FigmaTemp, FigmaHum, FigmaLight } from '../components/icons';
+import { SENSOR_LOG_PAGE_SIZES, SENSOR_UNITS } from '../utils/constants';
 
 const ICONS = {
   temp: (
     <div className="w-8 h-8 rounded-full bg-[#ffedd5] flex items-center justify-center text-[#f97316] shrink-0">
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21a5 5 0 0 1-5-5c0-1.657 1.343-3 3-3V5a2 2 0 1 1 4 0v8c1.657 0 3 1.343 3 3a5 5 0 0 1-5 5z"></path></svg>
+      <FigmaTemp size={16} />
     </div>
   ),
   hum: (
     <div className="w-8 h-8 rounded-full bg-[#dbeafe] flex items-center justify-center text-[#3b82f6] shrink-0">
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.5c-4.4 0-8-3.6-8-8s8-11.5 8-11.5 8 7.1 8 11.5-3.6 8-8 8z"></path></svg>
+      <FigmaHum size={16} />
     </div>
   ),
   light: (
     <div className="w-8 h-8 rounded-full bg-[#fef08a] flex items-center justify-center text-[#eab308] shrink-0">
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-      </svg>
+      <FigmaLight size={16} />
     </div>
   ),
   default: (
@@ -28,11 +26,12 @@ const ICONS = {
   ),
 };
 
-const UNITS = {
-  temp: '°F',
-  hum: '%',
-  light: 'LUX',
-  default: ''
+const getSensorDisplay = (sensorName = '') => {
+  const lower = sensorName.toLowerCase();
+  if (lower.includes('temp')) return { icon: ICONS.temp, unit: SENSOR_UNITS.temp };
+  if (lower.includes('hum')) return { icon: ICONS.hum, unit: SENSOR_UNITS.hum };
+  if (lower.includes('light')) return { icon: ICONS.light, unit: SENSOR_UNITS.light };
+  return { icon: ICONS.default, unit: SENSOR_UNITS.default };
 };
 
 const SensorLogs = () => {
@@ -75,14 +74,6 @@ const SensorLogs = () => {
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > totalPages) return;
     fetchLogs(newPage);
-  };
-
-  const getSensorDisplay = (sensorName = '') => {
-    const lower = sensorName.toLowerCase();
-    if (lower.includes('temp')) return { icon: ICONS.temp, unit: UNITS.temp };
-    if (lower.includes('hum')) return { icon: ICONS.hum, unit: UNITS.hum };
-    if (lower.includes('light')) return { icon: ICONS.light, unit: UNITS.light };
-    return { icon: ICONS.default, unit: UNITS.default };
   };
 
   return (
@@ -194,9 +185,7 @@ const SensorLogs = () => {
                   value={pageSize}
                   onChange={e => { setPageSize(Number(e.target.value)); fetchLogs(1); }}
                 >
-                  <option value={7}>7</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
+                  {SENSOR_LOG_PAGE_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex flex-col justify-center items-center px-3 pointer-events-none text-gray-600">
                   <svg className="w-2 h-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 6l-6 6h12z"></path></svg>
