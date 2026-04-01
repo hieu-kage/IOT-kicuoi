@@ -1,12 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { searchSensorLogs } from '../api';
 
-const SENSOR_CATEGORIES = [
-  { label: 'Sensor Type: All', value: '' },
-  { label: 'Temperature', value: 'temp' },
-  { label: 'Humidity', value: 'hum' },
-  { label: 'Light', value: 'light' }
-];
 
 const ICONS = {
   temp: (
@@ -43,7 +37,6 @@ const UNITS = {
 
 const SensorLogs = () => {
   const [q, setQ] = useState('');
-  const [sensorType, setSensorType] = useState('');
   const [sort, setSort] = useState('desc');
 
   const [page, setPage] = useState(1);
@@ -57,7 +50,6 @@ const SensorLogs = () => {
   const fetchLogs = useCallback((p = 1) => {
     setLoading(true);
     searchSensorLogs({
-      sensor_code: sensorType || undefined,
       q: q || undefined,
       sort_type: sort,
       page: p,
@@ -71,7 +63,7 @@ const SensorLogs = () => {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [sensorType, sort, pageSize]);
+  }, [q, sort, pageSize]);
 
   // Initial load
   useEffect(() => {
@@ -113,13 +105,6 @@ const SensorLogs = () => {
         </div>
 
         <div className="flex items-center space-x-4 ml-auto">
-          <select
-            className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-sm font-medium shadow-sm outline-none focus:ring-purple-500 focus:border-purple-500 min-w-[180px]"
-            value={sensorType}
-            onChange={(e) => { setSensorType(e.target.value); fetchLogs(1); }}
-          >
-            {SENSOR_CATEGORIES.map(c => <option key={c.label} value={c.value}>{c.label}</option>)}
-          </select>
 
           <select
             className="border border-gray-300 rounded-lg px-4 py-2 bg-white text-sm font-medium shadow-sm outline-none focus:ring-purple-500 focus:border-purple-500 min-w-[180px]"

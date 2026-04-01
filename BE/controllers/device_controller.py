@@ -5,7 +5,6 @@ MÔ TẢ:
 """
 from sqlmodel import Session, select
 from sqlalchemy import func,or_,extract
-from datetime import datetime
 from fastapi import HTTPException
 from models.device import Device, ActionLog
 from schemas.device import ActionLogSearchRequest, ActionLogResponse
@@ -13,7 +12,6 @@ from utils.time_utils import get_vietnam_time
 from mqtt_client import publish_command
 from socket_manager import manager
 import time
-import re
 import math
 
 DEVICE_LED_MAP = {
@@ -185,13 +183,12 @@ def search_device_logs(db: Session, request: ActionLogSearchRequest):
                 ActionLog.device_status.ilike(f"%{val}%")
             ))
 
-
-    # 3. Áp dụng TẤT CẢ các filter vào query dữ liệu và query đếm tổng (Unpacking mảng filters)
+    if request.type:
+        filters.append(Device.type == request.type)
     if filters:
         query = query.where(*filters)
         count_query = count_query.where(*filters)
 
-    # 4. Xử lý logic sắp xếp (chỉ áp dụng cho query lấy dữ liệu)
     if request.sort_type == "asc":
         query = query.order_by(ActionLog.created_at.asc())
     else:

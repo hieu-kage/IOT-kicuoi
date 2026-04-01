@@ -119,7 +119,7 @@ def search_sensor_logs(db: Session, request: SensorLogSearchRequest):
                 filters.append(extract('hour', SensorLog.created_at) == int(time_match.group(1)))
                 filters.append(extract('minute', SensorLog.created_at) == int(time_match.group(2)))
                 if time_match.group(3):
-                    filters.append(extract('second', SensorLog.created_at) == int(time_match.group(3)))
+                    filters.append(func.floor(extract('second', SensorLog.created_at)) == int(time_match.group(3)))
             if date_match:
                 filters.append(extract('day', SensorLog.created_at) == int(date_match.group(1)))
                 filters.append(extract('month', SensorLog.created_at) == int(date_match.group(2)))
@@ -139,11 +139,6 @@ def search_sensor_logs(db: Session, request: SensorLogSearchRequest):
                 Sensor.name.ilike(f"%{val}%")
             ))
 
-    # 2. Xử lý logic lọc theo khoảng giá trị (min/max)
-    if request.min_value is not None:
-        filters.append(SensorLog.value >= request.min_value)
-    if request.max_value is not None:
-        filters.append(SensorLog.value <= request.max_value)
 
     # 3. Áp dụng TẤT CẢ filters vào cả query data và query count
     if filters:

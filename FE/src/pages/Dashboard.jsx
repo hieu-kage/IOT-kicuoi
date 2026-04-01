@@ -6,7 +6,6 @@ import { getSensorLatest, getSensorChart, getDevices, controlDevice } from '../a
 
 const RANGE_OPTIONS = ['1h', '5h', '24h'];
 
-// === ICONS ===
 const FigmaTemp = ({ size, className }) => (
   <svg width={size} height={size} viewBox="0 0 9 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M6.74999 13.5C6.74999 14.7426 5.74262 15.75 4.49999 15.75C3.25736 15.75 2.24999 14.7426 2.24999 13.5C2.24999 12.6673 2.70266 11.9409 3.37499 11.5517V7.875C3.37499 7.25368 3.87867 6.75 4.49999 6.75C5.1213 6.75 5.62499 7.25368 5.62499 7.875V11.5517C6.29732 11.9409 6.74999 12.6673 6.74999 13.5ZM7.87499 10.5239C8.57502 11.3171 8.99999 12.3589 8.99999 13.5C8.99999 15.9854 6.98543 18 4.49999 18C4.48948 18 4.47858 18 4.46803 17.9999C1.99648 17.9827 -0.012562 15.9481 5.9142e-05 13.4766C0.00582477 12.3446 0.429774 11.3117 1.12499 10.5239V3.375C1.12499 1.51105 2.63604 0 4.49999 0C6.36394 0 7.87499 1.51105 7.87499 3.375V10.5239ZM7.31249 13.5C7.31249 12.2928 6.63151 11.6652 6.18749 11.162V3.375C6.18749 2.44452 5.43047 1.6875 4.49999 1.6875C3.56951 1.6875 2.81249 2.44452 2.81249 3.375V11.162C2.36488 11.6693 1.69364 12.2906 1.68752 13.4852C1.67965 15.0277 2.93779 16.3017 4.47974 16.3124L4.49999 16.3125C6.0508 16.3125 7.31249 15.0508 7.31249 13.5Z" fill="currentColor" />
@@ -160,11 +159,9 @@ const Dashboard = () => {
     getSensorLatest().then(r => setStats(r.data)).catch(console.error);
   }, []);
 
-  // Hàm quản lý WebSocket chung
   const connectWebSocket = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
-    // Fix: Không hardcode localhost
     const socketUrl = (import.meta.env && import.meta.env.VITE_WS_URL) || 'ws://localhost:8000/ws';
     const socket = new WebSocket(socketUrl);
     wsRef.current = socket;
@@ -223,7 +220,7 @@ const Dashboard = () => {
 
     socket.onerror = (error) => {
       console.error('[WebSocket] Error:', error);
-      socket.close(); // Buộc close để kích hoạt Auto-reconnect
+      socket.close();
     };
   }, []);
 
@@ -254,14 +251,12 @@ const Dashboard = () => {
             const isSeconds = r === '1h';
             const dateObj = new Date(timestamp);
 
-            // Format time key
             const key = dateObj.toLocaleTimeString('vi-VN', {
               hour: '2-digit',
               minute: '2-digit',
               second: isSeconds ? '2-digit' : undefined
             });
 
-            // Ghi lại timestamp thực để dễ sort
             if (!timeMap[key]) {
               timeMap[key] = { time: key, timestamp: dateObj.getTime() };
             }
@@ -269,7 +264,6 @@ const Dashboard = () => {
           });
         });
 
-        // FIX: Đã sắp xếp lại data theo đúng mốc thời gian (chrono)
         const sortedData = Object.values(timeMap).sort((a, b) => a.timestamp - b.timestamp);
         setChartData(sortedData);
       })
