@@ -138,9 +138,9 @@ const DeviceLogs = () => {
 
       {/* TableSection */}
       <section className="bg-white border border-purple-200 rounded-xl overflow-hidden shadow-sm mb-8">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-h-[520px] overflow-y-auto">
           <table className="w-full text-left border-collapse min-w-[600px]">
-            <thead>
+            <thead className="sticky top-0 bg-white z-10">
               <tr className="bg-white border-b border-purple-200">
                 <th className="px-6 py-4 text-sm font-extrabold text-gray-900 uppercase tracking-wider w-16">ID</th>
                 <th className="px-6 py-4 text-sm font-extrabold text-gray-900 uppercase tracking-wider">Device Name</th>

@@ -139,7 +139,6 @@ def on_message(client, userdata, msg):
         print(f"[MQTT Subscriber] Error parsing message: {e}")
 
 def save_to_db(temp, hum, lux):
-    """Lưu 3 bản ghi SensorLog riêng biệt (temp, hum, lux) vào DB."""
     from sqlmodel import select
     from models.sensor import Sensor
     sensor_values = [

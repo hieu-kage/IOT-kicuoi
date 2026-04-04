@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Wind } from 'lucide-react';
 import StatCard from '../components/ui/StatCard';
 import DeviceCard from '../components/ui/DeviceCard';
 import { FigmaTemp, FigmaHum, FigmaLight } from '../components/icons';
@@ -29,11 +30,45 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Stat Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <StatCard label="Temperature" value={stats?.temperature?.value} unit={stats?.temperature?.unit || '°C'} trend="up" icon={FigmaTemp} colorClass={getTempColorClass(stats?.temperature?.value).text} iconClass={getTempColorClass(stats?.temperature?.value).bg} />
-        <StatCard label="Humidity" value={stats?.humidity?.value} unit={stats?.humidity?.unit || '%'} trend="down" icon={FigmaHum} colorClass={getHumColorClass(stats?.humidity?.value).text} iconClass={getHumColorClass(stats?.humidity?.value).bg} />
-        <StatCard label="Light Intensity" value={stats?.light?.value} unit={stats?.light?.unit || 'Lux'} trend="up" icon={FigmaLight} colorClass={getLightColorClass(stats?.light?.value).text} iconClass={getLightColorClass(stats?.light?.value).bg} />
+      {/* Stat Cards - Responsive Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <StatCard
+          label="Temperature"
+          value={stats?.temperature?.value}
+          unit={stats?.temperature?.unit || '°C'}
+          trend="up"
+          icon={FigmaTemp}
+          colorClass={getTempColorClass(stats?.temperature?.value).text}
+          iconClass={getTempColorClass(stats?.temperature?.value).bg}
+        />
+        <StatCard
+          label="Humidity"
+          value={stats?.humidity?.value}
+          unit={stats?.humidity?.unit || '%'}
+          trend="down"
+          icon={FigmaHum}
+          colorClass={getHumColorClass(stats?.humidity?.value).text}
+          iconClass={getHumColorClass(stats?.humidity?.value).bg}
+        />
+        <StatCard
+          label="Light Intensity"
+          value={stats?.light?.value}
+          unit={stats?.light?.unit || 'Lux'}
+          trend="up"
+          icon={FigmaLight}
+          colorClass={getLightColorClass(stats?.light?.value).text}
+          iconClass={getLightColorClass(stats?.light?.value).bg}
+        />
+        {/* Example of a new card added easily */}
+        {/* <StatCard 
+          label="Air Quality" 
+          value="92" 
+          unit="AQI" 
+          trend="up" 
+          icon={Wind} 
+          colorClass="text-emerald-600" 
+          iconClass="bg-emerald-50" 
+        /> */}
       </div>
 
       {/* Chart */}
@@ -86,7 +121,7 @@ const Dashboard = () => {
 
       {/* Device Cards */}
       {devices.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {devices.map(device => (
             <DeviceCard
               key={device.id || device.device_code}
